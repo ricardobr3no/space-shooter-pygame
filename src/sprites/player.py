@@ -8,9 +8,7 @@ width, height = SCREEN_SIZE
 class Player(pygame.sprite.Sprite):
     size = 50
 
-    def __init__(
-        self, x: int = width // 2 - size // 2, y: int = height // 2 - size // 2
-    ):
+    def __init__(self):
         super().__init__()
         self.restart()
 

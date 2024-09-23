@@ -10,37 +10,24 @@ font = pygame.font.SysFont(
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(
-        self,
-        positionX: int,
-        positionY: int,
-        text: str,
-        color: tuple | list | str,
-        bg: tuple | list | str,
-        size: tuple,
-        callback=None,
-    ) -> None:
-        super().__init__(),
-        self.text = font.render(text, False, color, bg)
-        self.image = pygame.Surface(size)
-        self.image.fill("gray")
+    def __init__(self, x, y, width, height, color, text, function):
+        super().__init__()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+
+        font = pygame.font.SysFont("comic sans", 36)
+        self.text_surface = font.render(text, True, (0, 0, 0))
+        self.text_rect = self.text_surface.get_rect(center=(width // 2, height // 2))
+        self.image.blit(self.text_surface, self.text_rect)
+
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = positionX, positionY
-        self.color = color
-        self.bg = bg
+        self.rect.x = x
+        self.rect.y = y
 
-        if callback == None:
-            callback = lambda: print("no function")
-        self.callback = callback
+        self.function = function
 
-    def checkMouseClick(self) -> bool:
-        mouse_pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(mouse_pos):
-            return True
+    def update(self):
+        pass
 
-        return False
-
-    def update(self, dt=None):
-        if self.checkMouseClick():
-            self.color, self.bg = self.bg, self.color
-            self.callback()
+    def is_clicked(self, mouse_pos) -> bool:
+        return self.rect.collidepoint(mouse_pos)

@@ -7,7 +7,7 @@ class Enemy(pygame.sprite.Sprite):
         super().__init__()
         self.size = 35
         self.image = pygame.Surface((self.size, self.size))
-        self.image.fill("pink")  # Cor vermelha
+        self.image.fill("hotpink2")  # Cor vermelha
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

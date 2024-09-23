@@ -6,7 +6,6 @@ from sprites.enemy import Enemy
 
 # ui
 from ui.buttons import Button
-
 from settings import SCREEN_SIZE, GAME_TITLE
 from random import choice, randint
 
@@ -26,7 +25,7 @@ all_sprites_group = pygame.sprite.Group()
 player_group = pygame.sprite.Group()
 bullets_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
-hud_group = pygame.sprite.Group()
+button_group = pygame.sprite.Group()
 
 # entities
 player = Player()
@@ -37,8 +36,8 @@ def spawn_enemys(spawn_rate: float, dt: float):
     global spawn_timer
     spawn_timer += dt
     if spawn_timer >= spawn_rate:
-        spawn_range_x = choice([randint(-20, -10), randint(610, 620)])
-        spawn_range_y = randint(-20, 620)
+        spawn_range_x = choice((-30, SCREEN_SIZE[0] + 30))
+        spawn_range_y = choice((-20, SCREEN_SIZE[1] + 30))
 
         new_enemy = Enemy(spawn_range_x, spawn_range_y, player)
         enemy_group.add(new_enemy)
@@ -95,13 +94,13 @@ def main():
             spawn_timer = 0
 
         # redraw
-        tela.fill("black")
+        tela.fill("midnightblue")
 
         player_group.draw(tela)
         bullets_group.draw(tela)
         enemy_group.draw(tela)
 
-        tela.blit(score_label, (300, 10))
+        tela.blit(score_label, (SCREEN_SIZE[0] // 2, 10))
         pygame.display.flip()
     pygame.quit()
 
@@ -112,39 +111,60 @@ def menu():
     background_color = (128, 0, 0)
 
     texto_menu = font.render("MENU", False, "yellow")
-    button1 = pygame.Rect(300, 200, 100, 50)
-    button2 = Button(300, 400, "credits", "white", "black", (50, 20))
-    hud_group.add(button2)
+    screen_width = SCREEN_SIZE[0] / 2
+    button_width, button_heigth = 200, 40
+    button_x = screen_width // 2 + button_width // 4
+    button_color = "blue"
 
-    def draw_button(button, text_content: str, callback=None):
-
-        if callback == None:
-            callback = lambda: print("sem funcao")
-        surface = pygame.draw.rect(tela, "blue", button1)
-        texto = font.render("start", False, "white")
-        tela.blit(texto, (surface.x, surface.y))
-        callback()
+    # buttons
+    button1 = Button(
+        button_x,
+        150,
+        button_width,
+        button_heigth,
+        button_color,
+        "start",
+        lambda: main(),
+    )
+    button2 = Button(
+        button_x,
+        250,
+        button_width,
+        button_heigth,
+        button_color,
+        "credits",
+        lambda: print("credits"),
+    )
+    button3 = Button(
+        button_x,
+        350,
+        button_width,
+        button_heigth,
+        button_color,
+        "exit",
+        lambda: pygame.quit(),
+    )
+    button_group.add(button1, button2, button3)
 
     while running:
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # verifica qual botao foi pressionado e em seguida aciona sua respectiva funcao
                 mouse_pos = pygame.mouse.get_pos()
-                if button1.collidepoint(mouse_pos):
-                    print("apertou")
+                for button in button_group.sprites():
+                    if button.is_clicked(mouse_pos):
+                        button.function()
 
         # logic
-        hud_group.update()
+        button_group.update()
 
+        # redraw
         tela.fill(background_color)
-        tela.blit(texto_menu, (300, 100))
-        hud_group.draw(tela)
-        draw_button(
-            button=button1,
-            text_content="start",
-        )
+        tela.blit(texto_menu, (screen_width // 2 + texto_menu.get_size()[0], 50))
+        button_group.draw(tela)
 
         # tela.blit(button1, (300, 200))
         pygame.display.flip()
