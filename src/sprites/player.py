@@ -1,6 +1,6 @@
 import pygame
-from config.settings import SCREEN_SIZE
-from .bullet import Bullet
+from src.config.settings import SCREEN_SIZE
+from .bullets import Bullet
 
 width, height = SCREEN_SIZE
 
