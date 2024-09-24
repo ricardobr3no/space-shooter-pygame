@@ -10,7 +10,7 @@ from ui.buttons import Button
 from config.settings import SCREEN_SIZE, GAME_TITLE
 
 # math
-from random import choice, randint
+from random import choice
 
 
 pygame.init()
@@ -56,7 +56,7 @@ def spawn_enemys(spawn_rate: float, dt: float):
 
 
 # janela do jogo
-def main():
+def game():
     global spawn_timer
     running = True
     score = 0
@@ -71,6 +71,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                exit()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 bullets_group.add(player.shoot_bullet())
 
@@ -86,7 +87,6 @@ def main():
             dokilla=False,
             dokillb=False,
         )
-
         acertou = pygame.sprite.groupcollide(
             bullets_group,
             enemy_group,
@@ -134,9 +134,12 @@ def main():
 def menu():
     running = True
     background_color = (128, 0, 0)
+    screen_width = SCREEN_SIZE[0] / 2
 
     texto_menu = font.render("MENU", False, "yellow")
-    screen_width = SCREEN_SIZE[0] / 2
+    texto_creditos = font.render("by kBreno", False, "yellow")
+    # imagemGit = pygame.image.load("")
+
     button_width, button_heigth = 200, 40
     button_x = screen_width // 2 + button_width // 4
     button_color = "blue"
@@ -149,7 +152,7 @@ def menu():
         button_heigth,
         button_color,
         "start",
-        lambda: main(),
+        lambda: game(),
     )
     button2 = Button(
         button_x,
@@ -157,19 +160,10 @@ def menu():
         button_width,
         button_heigth,
         button_color,
-        "credits",
-        lambda: print("credits"),
-    )
-    button3 = Button(
-        button_x,
-        350,
-        button_width,
-        button_heigth,
-        button_color,
         "exit",
-        lambda: pygame.quit(),
+        lambda: exit(),  # sai do jogo: pygame.quit(), sys.exit()
     )
-    button_group.add(button1, button2, button3)
+    button_group.add(button1, button2)
 
     while running:
         clock.tick(60)
@@ -190,6 +184,7 @@ def menu():
         # redraw
         tela.fill(background_color)
         tela.blit(texto_menu, (screen_width // 2 + texto_menu.get_size()[0], 50))
+        tela.blit(texto_creditos, (screen_width // 2, 300))
         button_group.draw(tela)
 
         # tela.blit(button1, (300, 200))
