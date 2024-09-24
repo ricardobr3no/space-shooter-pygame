@@ -20,6 +20,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = height // 2 - self.size // 2
         self.position = pygame.Vector2(self.rect.x, self.rect.y)
         self.speed = 300
+        self.hp = 3
+
+    def restart_position(self):
+        self.rect.x = width // 2 - self.size // 2
+        self.rect.y = height // 2 - self.size // 2
 
     def update(self, dt):
         # Aqui você adicionaria a lógica de movimento do player

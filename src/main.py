@@ -35,11 +35,13 @@ walls_group = pygame.sprite.Group()
 player = Player()
 player_group.add(player)
 
+wall_margin = player.rect.size[1] // 2
+
 # paredes invisiveis
-wall_1 = Wall(0, 0, SCREEN_SIZE[0], 1)
-wall_2 = Wall(0, SCREEN_SIZE[1], SCREEN_SIZE[0], 1)
-wall_3 = Wall(0, 0, 1, SCREEN_SIZE[1])
-wall_4 = Wall(SCREEN_SIZE[0], 0, 1, SCREEN_SIZE[1])
+wall_1 = Wall(0, -wall_margin, SCREEN_SIZE[0], 1)  # top
+wall_2 = Wall(0, wall_margin + SCREEN_SIZE[1], SCREEN_SIZE[0], 1)  # bottom
+wall_3 = Wall(-wall_margin, 0, 1, SCREEN_SIZE[1])  # left
+wall_4 = Wall(wall_margin + SCREEN_SIZE[0], 0, 1, SCREEN_SIZE[1])  # right
 walls_group.add(wall_1, wall_2, wall_3, wall_4)
 
 
@@ -61,6 +63,7 @@ def game():
     running = True
     score = 0
     score_label = font.render(f"{score}", True, "white")
+    hp_label = font.render(f"HP: {player.hp}", True, "yellow")
     player_last_position = player.rect.x, player.rect.y
 
     while running:
@@ -106,12 +109,17 @@ def game():
             # print(score)
 
         if game_over:
+            player.hp -= 1
+            hp_label = font.render(f"HP: {player.hp}", False, "yellow")
             bullets_group.empty()
             enemy_group.empty()
-            player.restart()
-            score = 0
-            score_label = font.render(f"{score}", True, "white")
-            spawn_timer = 0
+            player.restart_position()
+            if player.hp <= 0:
+                # player.restart()
+                # score = 0
+                # score_label = font.render(f"{score}", True, "white")
+                # spawn_timer = 0
+                menu()
 
         if wall_colission:
             player.rect.x, player.rect.y = player_last_position
@@ -126,6 +134,7 @@ def game():
         enemy_group.draw(tela)
 
         tela.blit(score_label, (SCREEN_SIZE[0] // 2, 10))
+        tela.blit(hp_label, (40, 10))
         pygame.display.flip()
     pygame.quit()
 
