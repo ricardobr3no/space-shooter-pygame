@@ -3,10 +3,13 @@ import pygame
 # entities
 from sprites.player import Player
 from sprites.enemy import Enemy
+from sprites.wall import Wall
 
 # ui
 from ui.buttons import Button
-from settings import SCREEN_SIZE, GAME_TITLE
+from config.settings import SCREEN_SIZE, GAME_TITLE
+
+# math
 from random import choice, randint
 
 
@@ -26,10 +29,18 @@ player_group = pygame.sprite.Group()
 bullets_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
 button_group = pygame.sprite.Group()
+walls_group = pygame.sprite.Group()
 
 # entities
 player = Player()
 player_group.add(player)
+
+# paredes invisiveis
+wall_1 = Wall(0, 0, SCREEN_SIZE[0], 1)
+wall_2 = Wall(0, SCREEN_SIZE[1], SCREEN_SIZE[0], 1)
+wall_3 = Wall(0, 0, 1, SCREEN_SIZE[1])
+wall_4 = Wall(SCREEN_SIZE[0], 0, 1, SCREEN_SIZE[1])
+walls_group.add(wall_1, wall_2, wall_3, wall_4)
 
 
 def spawn_enemys(spawn_rate: float, dt: float):
@@ -50,6 +61,7 @@ def main():
     running = True
     score = 0
     score_label = font.render(f"{score}", True, "white")
+    player_last_position = player.rect.x, player.rect.y
 
     while running:
         dt = clock.tick(60) / 1_000
@@ -66,6 +78,14 @@ def main():
         player_group.update(dt)
         bullets_group.update(dt)
         enemy_group.update(dt)
+
+        wall_colission = pygame.sprite.groupcollide(
+            # verifica se atigiu uma parede
+            walls_group,
+            player_group,
+            dokilla=False,
+            dokillb=False,
+        )
 
         acertou = pygame.sprite.groupcollide(
             bullets_group,
@@ -92,6 +112,11 @@ def main():
             score = 0
             score_label = font.render(f"{score}", True, "white")
             spawn_timer = 0
+
+        if wall_colission:
+            player.rect.x, player.rect.y = player_last_position
+        else:
+            player_last_position = player.rect.x, player.rect.y
 
         # redraw
         tela.fill("midnightblue")
@@ -157,6 +182,7 @@ def menu():
                 for button in button_group.sprites():
                     if button.is_clicked(mouse_pos):
                         button.function()
+                        print("saindo..")
 
         # logic
         button_group.update()
