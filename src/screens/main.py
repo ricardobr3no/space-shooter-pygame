@@ -106,7 +106,7 @@ class Main:
                 self.bullets_group,
                 self.enemy_group,
                 dokilla=True,
-                dokillb=True,
+                dokillb=False,
             )
             game_over = pygame.sprite.groupcollide(
                 self.player_group,
@@ -116,6 +116,17 @@ class Main:
             )
 
             if acertou:
+                """
+                A função pygame.sprite.groupcollide() retorna um dicionário que mapeia os sprites do primeiro grupo com os sprites do segundo grupo que colidiram com eles.
+                """
+                for sprite_colliding in acertou.values():
+                    for enemy in sprite_colliding:
+
+                        enemy.hp -= self.player.damage
+                        if enemy.hp <= 0:
+                            self.enemy_group.remove(enemy)
+
+                    pass
                 self.score += 1
                 self.score_label = self.font.render(f"{self.score}", True, "white")
 

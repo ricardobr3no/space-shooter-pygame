@@ -18,6 +18,7 @@ class Enemy_1(pygame.sprite.Sprite):
         self.rect.y = y
         self.speed = 60
         self.target_player = player
+        self.hp = 2
         self.apply_glow = True
 
     def get_player_direction(self, fromX: int, fromY: int, player):
@@ -55,6 +56,7 @@ class Enemy_2(Enemy_1):
         self.color = "deeppink"
         self.size = 45
         self.speed = 40
+        self.hp = 5
         self.update_image()
 
     def update_image(self):

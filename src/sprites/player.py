@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.position = pygame.Vector2(self.rect.x, self.rect.y)
         self.speed = 300
         self.hp = 3
+        self.damage = 1
         self.apply_glow = True
 
     def restart_position(self):
@@ -68,5 +69,5 @@ class Player(pygame.sprite.Sprite):
                 sprite=self,
                 glow_color="red",
                 intensity=80,
-                glow_scale=1.3,
+                glow_scale=1.4,
             )
