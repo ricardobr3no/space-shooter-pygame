@@ -2,17 +2,16 @@ import pygame
 
 # entities
 from src.sprites.player import Player
-from src.sprites.enemys import Enemy
+from src.sprites.enemys import Enemy_1, Enemy_2
 from src.sprites.walls import Wall
 
 # ui
 # from ui.buttons import Button
-from src.config.settings import SCREEN_SIZE, GAME_TITLE
+from src.config.settings import SCREEN_SIZE, GAME_TITLE, FPS, TELA
+from src.config.world import creat_glow
 
 # math
 from random import choice
-
-# from .menu import Menu
 
 
 class Main:
@@ -23,7 +22,6 @@ class Main:
 
     def load(self):
         # config
-        self.tela = pygame.display.set_mode(SCREEN_SIZE)
         pygame.display.set_caption(GAME_TITLE)
         self.running = True
         self.clock = pygame.time.Clock()
@@ -59,17 +57,24 @@ class Main:
     def spawn_enemys(self, spawn_rate: float, dt: float):
         self.spawn_timer += dt
         if self.spawn_timer >= spawn_rate:
+            # choicing spawn location
             spawn_range_x = choice((-30, SCREEN_SIZE[0] + 30))
             spawn_range_y = choice((-20, SCREEN_SIZE[1] + 30))
 
-            new_enemy = Enemy(spawn_range_x, spawn_range_y, self.player)
-            self.enemy_group.add(new_enemy)
+            # choicing enemy type
+            choiced_enemy = choice(
+                [
+                    Enemy_1(spawn_range_x, spawn_range_y, self.player),
+                    Enemy_2(spawn_range_x, spawn_range_y, self.player),
+                ]
+            )
+            self.enemy_group.add(choiced_enemy)
             self.spawn_timer = 0
 
     def mainloop(self):
 
         while self.running:
-            dt = self.clock.tick(60) / 1_000
+            dt = self.clock.tick(FPS) / 1_000
 
             self.spawn_enemys(1.3, dt)
 
@@ -78,7 +83,8 @@ class Main:
                     self.running = False
                     exit()
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    self.bullets_group.add(self.player.shoot_bullet())
+                    shooted_bullet = self.player.shoot_bullet()
+                    self.bullets_group.add(shooted_bullet)
 
             # update
             self.player_group.update(dt)
@@ -133,14 +139,43 @@ class Main:
                 self.player_last_position = self.player.rect.x, self.player.rect.y
 
             # redraw
-            self.tela.fill("midnightblue")
+            TELA.fill("midnightblue")
 
-            self.player_group.draw(self.tela)
-            self.bullets_group.draw(self.tela)
-            self.enemy_group.draw(self.tela)
+            TELA.blit(self.score_label, (SCREEN_SIZE[0] // 2, 10))
+            TELA.blit(self.hp_label, (40, 10))
 
-            self.tela.blit(self.score_label, (SCREEN_SIZE[0] // 2, 10))
-            self.tela.blit(self.hp_label, (40, 10))
+            for bullet in self.bullets_group.sprites():
+                creat_glow(
+                    win=TELA,
+                    sprite=bullet,
+                    offset=(0, 0),
+                    glow_color="red",
+                    intensity=100,
+                    glow_scale=2.5,
+                )
+
+            for enemy in self.enemy_group.sprites():
+                creat_glow(
+                    win=TELA,
+                    sprite=enemy,
+                    offset=(0, 0),
+                    glow_color="pink",
+                    intensity=180,
+                    glow_scale=1.23,
+                )
+
+            creat_glow(
+                win=TELA,
+                sprite=self.player,
+                glow_color="red",
+                intensity=80,
+                glow_scale=1.23,
+            )
+
+            self.player_group.draw(TELA)
+            self.bullets_group.draw(TELA)
+            self.enemy_group.draw(TELA)
+
             pygame.display.flip()
 
         # encerra loop da tela atual com break e inicia o proximo

@@ -2,7 +2,7 @@ import pygame
 
 # ui
 from src.ui.buttons import Button
-from src.config.settings import SCREEN_SIZE, GAME_TITLE
+from src.config.settings import SCREEN_SIZE, GAME_TITLE, FPS, TELA
 from .main import Main
 
 
@@ -13,7 +13,6 @@ class Menu:
 
     def load(self):
         # config
-        self.tela = pygame.display.set_mode(SCREEN_SIZE)
         pygame.display.set_caption(GAME_TITLE)
         self.clock = pygame.time.Clock()
         font = pygame.font.SysFont(name="comic sans", size=32)
@@ -55,7 +54,7 @@ class Menu:
     def mainloop(self):
 
         while self.running:
-            self.clock.tick(60)
+            self.clock.tick(FPS)
             # event loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -70,14 +69,13 @@ class Menu:
 
             # logic
             self.button_group.update()
-
             # redraw
-            self.tela.fill(self.background_color)
-            self.tela.blit(
+            TELA.fill(self.background_color)
+            TELA.blit(
                 self.texto_menu,
                 (self.screen_width // 2 + self.texto_menu.get_size()[0], 50),
             )
-            self.tela.blit(self.texto_creditos, (self.screen_width // 2, 300))
-            self.button_group.draw(self.tela)
+            TELA.blit(self.texto_creditos, (self.screen_width // 2, 300))
+            self.button_group.draw(TELA)
 
             pygame.display.flip()
