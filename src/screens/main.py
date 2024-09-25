@@ -116,19 +116,17 @@ class Main:
             )
 
             if acertou:
-                """
-                A função pygame.sprite.groupcollide() retorna um dicionário que mapeia os sprites do primeiro grupo com os sprites do segundo grupo que colidiram com eles.
-                """
-                for sprite_colliding in acertou.values():
-                    for enemy in sprite_colliding:
-
+                """A função pygame.sprite.groupcollide() retorna um dicionário que mapeia os sprites do primeiro grupo com os sprites do segundo grupo que colidiram com eles."""
+                for sprites_collision in acertou.values():
+                    for enemy in sprites_collision:
                         enemy.hp -= self.player.damage
-                        if enemy.hp <= 0:
-                            self.enemy_group.remove(enemy)
 
-                    pass
-                self.score += 1
-                self.score_label = self.font.render(f"{self.score}", True, "white")
+                        if enemy.hp <= 0:
+                            enemy.death()
+                            self.score += 1
+                            self.score_label = self.font.render(
+                                f"{self.score}", True, "white"
+                            )
 
             if game_over:
                 self.player.hp -= 1

@@ -13,6 +13,7 @@ menu = Menu()
 main = Main(menu)
 
 if __name__ == "__main__":
-    game = Game(menu)
-    game.run(main)
+    game = Game()
+    # game.run(main)
+    main.mainloop()
     ...

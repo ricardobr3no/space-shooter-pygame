@@ -5,6 +5,9 @@ import math
 from src.config.settings import TELA
 from src.config.world import radial_glow, rect_glow
 
+# vfx
+# from src.vfx.particle import Particle
+
 
 class Enemy_1(pygame.sprite.Sprite):
     def __init__(self, x, y, player):
@@ -45,6 +48,9 @@ class Enemy_1(pygame.sprite.Sprite):
                 intensity=100,
                 glow_scale=1.3,
             )
+
+    def death(self):
+        self.kill()
 
     def __repr__(self) -> str:
         return "Enemy Type 1"

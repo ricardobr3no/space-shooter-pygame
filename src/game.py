@@ -5,6 +5,7 @@ class Game:
 
     def __init__(self, main_screen=None) -> None:
         pygame.init()
+        pygame.font.init()
         self.main_screen = main_screen
 
     def run(self, screen=None):
@@ -13,4 +14,5 @@ class Game:
         """
         if screen is None:
             self.main_screen.mainloop()
+            return
         screen.mainloop()
