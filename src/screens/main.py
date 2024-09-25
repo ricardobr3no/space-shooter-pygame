@@ -141,9 +141,7 @@ class Main:
             # redraw
             TELA.fill("midnightblue")
 
-            TELA.blit(self.score_label, (SCREEN_SIZE[0] // 2, 10))
-            TELA.blit(self.hp_label, (40, 10))
-
+            # glow bullets
             for bullet in self.bullets_group.sprites():
                 creat_glow(
                     win=TELA,
@@ -154,6 +152,7 @@ class Main:
                     glow_scale=2.5,
                 )
 
+            # glow enemys
             for enemy in self.enemy_group.sprites():
                 creat_glow(
                     win=TELA,
@@ -164,6 +163,7 @@ class Main:
                     glow_scale=1.23,
                 )
 
+            # glow player
             creat_glow(
                 win=TELA,
                 sprite=self.player,
@@ -172,9 +172,13 @@ class Main:
                 glow_scale=1.23,
             )
 
+            # update
             self.player_group.draw(TELA)
             self.bullets_group.draw(TELA)
             self.enemy_group.draw(TELA)
+
+            TELA.blit(self.score_label, (SCREEN_SIZE[0] // 2, 10))
+            TELA.blit(self.hp_label, (40, 10))
 
             pygame.display.flip()
 
