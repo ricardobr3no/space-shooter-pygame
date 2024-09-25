@@ -1,5 +1,6 @@
 import pygame
-from src.config.settings import SCREEN_SIZE
+from src.config.settings import SCREEN_SIZE, TELA
+from src.config.world import radial_glow
 from .bullets import Bullet
 
 width, height = SCREEN_SIZE
@@ -21,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.position = pygame.Vector2(self.rect.x, self.rect.y)
         self.speed = 300
         self.hp = 3
+        self.apply_glow = True
 
     def restart_position(self):
         self.rect.x = width // 2 - self.size // 2
@@ -46,6 +48,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += dir.x * self.speed * dt
         self.rect.y += dir.y * self.speed * dt
 
+        # glow
+        self.glow(self.apply_glow)
+
     def shoot_bullet(self):
         mouse_pos = pygame.mouse.get_pos()
         target_x, target_y = mouse_pos
@@ -55,3 +60,13 @@ class Player(pygame.sprite.Sprite):
         )
         bullet = Bullet(start_x, start_y, target_x, target_y)
         return bullet
+
+    def glow(self, apply: bool):
+        if apply:
+            radial_glow(
+                win=TELA,
+                sprite=self,
+                glow_color="red",
+                intensity=80,
+                glow_scale=1.3,
+            )

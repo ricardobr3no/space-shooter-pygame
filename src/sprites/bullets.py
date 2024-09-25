@@ -1,6 +1,9 @@
 import pygame
 import math
 
+from src.config.settings import TELA
+from src.config.world import radial_glow
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(
@@ -14,6 +17,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y = start_y
         self.speed = 500
         self.dx, self.dy = self.target_direction(start_x, start_y, target_x, target_y)
+        self.apply_glow = True
 
     def target_direction(self, fromX, fromY, toX, toY):
         angle = math.atan2(toY - fromY, toX - fromX)
@@ -24,3 +28,15 @@ class Bullet(pygame.sprite.Sprite):
     def update(self, dt) -> None:
         self.rect.x += self.dx * self.speed * dt
         self.rect.y += self.dy * self.speed * dt
+        self.glow(self.apply_glow)
+
+    def glow(self, apply: bool):
+        if apply:
+            radial_glow(
+                win=TELA,
+                sprite=self,
+                offset=(0, 0),
+                glow_color="red",
+                intensity=180,
+                glow_scale=1.6,
+            )
