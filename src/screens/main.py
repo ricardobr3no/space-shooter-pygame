@@ -1,3 +1,4 @@
+import random
 import pygame
 
 # entities
@@ -11,7 +12,9 @@ from src.config.settings import SCREEN_SIZE, GAME_TITLE, FPS, TELA
 from src.config.world import BACKGROUND_COLOR
 
 # math
-from random import choice
+from random import choice, randint
+
+from src.vfx.particle import Particle
 
 
 class Main:
@@ -53,6 +56,8 @@ class Main:
         self.score_label = self.font.render(f"{self.score}", True, "white")
         self.hp_label = self.font.render(f"HP: {self.player.hp}", True, "yellow")
         self.player_last_position = self.player.rect.x, self.player.rect.y
+
+        self.particles = []
 
     def spawn_enemys(self, spawn_rate: float, dt: float):
         self.spawn_timer += dt
@@ -116,13 +121,42 @@ class Main:
             )
 
             if acertou:
-                """A função pygame.sprite.groupcollide() retorna um dicionário que mapeia os sprites do primeiro grupo com os sprites do segundo grupo que colidiram com eles."""
+                """
+                A função pygame.sprite.groupcollide() retorna um dicionário que mapeia os sprites do primeiro grupo com os sprites do segundo grupo que colidiram com eles.
+                """
                 for sprites_collision in acertou.values():
                     for enemy in sprites_collision:
                         enemy.hp -= self.player.damage
 
                         if enemy.hp <= 0:
+                            particle_lifetime = randint(100, 150)
+
+                            for _ in range(randint(2, 4)):
+                                # particula blood
+                                new_particle = Particle(enemy.rect.x, enemy.rect.y)
+                                # config particle
+                                new_particle.load(
+                                    size=enemy.size // 2,
+                                    color="orange",
+                                    speed=random.uniform(0.8, 1.1),
+                                    lifetime=particle_lifetime,
+                                )
+                                self.particles.append(new_particle)
+                                enemy.death()
+
+                            # particula body
+                            new_particle = Particle(enemy.rect.x, enemy.rect.y)
+                            # config particle
+                            new_particle.load(
+                                size=enemy.size,
+                                color=enemy.color,
+                                lifetime=particle_lifetime,
+                                speed=0.2,
+                            )
+
+                            self.particles.append(new_particle)
                             enemy.death()
+
                             self.score += 1
                             self.score_label = self.font.render(
                                 f"{self.score}", True, "white"
@@ -158,10 +192,14 @@ class Main:
             self.bullets_group.update(dt)
             self.enemy_group.update(dt)
 
-            # update
+            # draw
             self.player_group.draw(TELA)
             self.bullets_group.draw(TELA)
             self.enemy_group.draw(TELA)
+
+            for particle in self.particles:
+                particle.draw(TELA)
+                ...
 
             TELA.blit(self.score_label, (SCREEN_SIZE[0] // 2, 10))
             TELA.blit(self.hp_label, (40, 10))
