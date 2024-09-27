@@ -19,7 +19,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = width // 2 - self.size // 2
         self.rect.y = height // 2 - self.size // 2
-        self.position = pygame.Vector2(self.rect.x, self.rect.y)
         self.speed = 300
         self.hp = 3
         self.damage = 1
@@ -69,5 +68,5 @@ class Player(pygame.sprite.Sprite):
                 sprite=self,
                 glow_color="red",
                 intensity=80,
-                glow_scale=1.4,
+                glow_scale=1.3,
             )

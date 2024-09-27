@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from src.config.settings import TELA
+from src.config.settings import SCREEN_SIZE, TELA
 from src.config.world import radial_glow
 
 
@@ -28,6 +28,14 @@ class Bullet(pygame.sprite.Sprite):
     def update(self, dt) -> None:
         self.rect.x += self.dx * self.speed * dt
         self.rect.y += self.dy * self.speed * dt
+
+        # remover se tiver fora do canva
+        if (self.rect.x < -10 or self.rect.x > SCREEN_SIZE[0] + 10) or (
+            self.rect.y < -10 or self.rect.y > SCREEN_SIZE[1] > 10
+        ):
+            self.kill()
+            print("removido")
+
         self.glow(self.apply_glow)
 
     def glow(self, apply: bool):
