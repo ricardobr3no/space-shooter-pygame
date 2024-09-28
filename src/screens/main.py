@@ -29,9 +29,24 @@ font = pygame.font.SysFont(
 class Main:
 
     def __init__(self, game_menu: object | None = None) -> None:
-        self.load()
         self.menu = game_menu
         self.best_score = 0
+        self.best_score_label = font.render(f"BEST: {self.best_score}", False, "black")
+        self.load()
+
+    def draw_target(self, mouse_pos):
+        mx, my = mouse_pos
+        size = 20
+        espessura = 3
+
+        # barra horizontal
+        pygame.draw.rect(
+            TELA, "red", rect=(mx - size // 2, my - espessura // 2, size, espessura)
+        )
+        # barra vertical
+        pygame.draw.rect(
+            TELA, "red", rect=(mx, my - size // 2, espessura - espessura // 2, size)
+        )
 
     def load(self):
         # config
@@ -80,28 +95,44 @@ class Main:
 
     def show_game_over_screen(self):
 
+        font_game_over = pygame.font.SysFont("comic sans", 40)
         surface = pygame.Surface((400, 300))
         center = (surface.get_width() // 2, surface.get_height() // 2)
+        # texts
+        game_over_message = font_game_over.render("GAME_OVER", False, "red")
+        game_over_message_outline = font_game_over.render("GAME_OVER", False, "black")
+        self.best_score_label = font.render(f"BEST: {self.best_score}", False, "black")
 
         # draw
         surface.fill("darkgray")
-        surface.set_alpha(90)
-        width_button = 100
+        # surface.set_alpha(100)  # %
+        width_button = 140
         self.replay_button = Button(
             x=SCREEN_SIZE[0] // 2 - width_button // 2,
-            y=SCREEN_SIZE[1] // 2 + 100,
+            y=SCREEN_SIZE[1] // 2 + 50,
             width=width_button,
             height=40,
             color="orange",
-            text="replay",
+            text="REPLAY",
             function=lambda: self.load(),
         )
         self.button_group.add(self.replay_button)
         self.button_group.update()
         # adicionando ao canva
         surface.blit(
-            self.game_over_label,
-            (center[0] - self.game_over_label.get_width() // 2, center[1]),
+            game_over_message_outline,
+            (center[0] - game_over_message.get_width() // 2 + 4, center[1] - 80),
+        )
+        surface.blit(
+            game_over_message,
+            (center[0] - game_over_message.get_width() // 2, center[1] - 80),
+        )
+        surface.blit(
+            self.best_score_label,
+            (
+                center[0] - self.best_score_label.get_width() // 2,
+                center[1],
+            ),
         )
         self.button_group.draw(surface)
 
@@ -150,12 +181,13 @@ class Main:
     def mainloop(self):
 
         # codigo temporario
-        self.spawn_power_up(500, 400)
+        # self.spawn_power_up(500, 400)
         showing_game_over = False
 
         while self.running:
             dt = self.clock.tick(FPS) / 1_000
             spawn_rate = 1.3
+            mouse_position = pygame.mouse.get_pos()
             self.spawn_enemys(spawn_rate, dt)
 
             # loop de evento
@@ -170,9 +202,7 @@ class Main:
 
                     if showing_game_over:
                         print("mostrei")
-                        self.replaying = self.replay_button.is_clicked(
-                            pygame.mouse.get_pos()
-                        )
+                        self.replaying = self.replay_button.is_clicked(mouse_position)
                         if self.replaying:
                             self.button_group.sprite.function()
                             showing_game_over = False
@@ -253,7 +283,11 @@ class Main:
                 #
                 if self.player.hp <= 0:
                     if self.score > self.best_score:  # atualiza best_score
-                        self.best_score = self.best_score
+                        self.best_score = self.score
+                        self.best_score_label = font.render(
+                            f"BEST: {self.best_score}", False, "black"
+                        )
+                        self.tela_game_over = self.show_game_over_screen()
 
                     self.score = 0
                     self.score_label = self.font.render(f"{self.score}", True, "white")
@@ -281,7 +315,7 @@ class Main:
                 self.enemy_group.update(dt)
 
                 # draw
-                self.powerups_group.draw(TELA)
+                # self.powerups_group.draw(TELA)
                 self.player_group.draw(TELA)
                 self.bullets_group.draw(TELA)
                 self.enemy_group.draw(TELA)
@@ -295,9 +329,17 @@ class Main:
 
             else:
                 self.button_group.update()
-                self.tela_game_over = self.show_game_over_screen()
-                self.replaying = self.replay_button.is_clicked(pygame.mouse.get_pos())
-                print(self.replaying)
+                # self.tela_game_over = self.show_game_over_screen()
+                # self.replaying = self.replay_button.is_clicked(mouse_position)
+                # print(self.replaying)
+
+                TELA.fill(BACKGROUND_COLOR)
+
+                # draw
+                # self.powerups_group.draw(TELA)
+                self.player_group.draw(TELA)
+                self.bullets_group.draw(TELA)
+                self.enemy_group.draw(TELA)
 
                 TELA.blit(
                     self.tela_game_over,
@@ -308,6 +350,7 @@ class Main:
                 )
                 self.button_group.draw(TELA)
 
+            self.draw_target(mouse_position)
             pygame.display.flip()
 
         # encerra loop da tela atual com break e inicia o proximo

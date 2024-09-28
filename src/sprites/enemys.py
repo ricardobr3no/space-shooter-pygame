@@ -34,8 +34,8 @@ class Enemy_1(pygame.sprite.Sprite):
         # Aqui você adicionaria a lógica de movimento do enemy
         # Por exemplo:
         dx, dy = self.get_player_direction(self.rect.x, self.rect.y, self.target_player)
-        self.rect.x += dx * self.speed * dt
-        self.rect.y += dy * self.speed * dt
+        self.rect.x += round(dx * self.speed * dt)
+        self.rect.y += round(dy * self.speed * dt)
         self.glow(self.apply_glow)
 
     def glow(self, apply: bool):

@@ -7,6 +7,7 @@ class Game:
         pygame.init()
         pygame.font.init()
         self.main_screen = main_screen
+        pygame.mouse.set_visible(False)
 
     def run(self, screen=None):
         """
