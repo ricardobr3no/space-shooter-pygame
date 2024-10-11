@@ -2,10 +2,9 @@
 
 Um jogo de Shooter 2D feito com pygame.
 
-
-
-
-https://github.com/user-attachments/assets/2d71ebcd-1559-41b1-9964-c19af7bfacee
+<div>
+  <img src="https://github.com/user-attachments/assets/71170005-3063-4cf7-8dd2-ce056b6eb9cc"  style="width:400px;">
+</div>
 
 
 
