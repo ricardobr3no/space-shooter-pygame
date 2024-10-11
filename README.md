@@ -2,7 +2,7 @@
 
 Um jogo de Shooter 2D feito com pygame.
 
-![gif do jogo](./screenshot/spaceshooter.gif)
+![gif do jogo](https://mega.nz/file/3cMUHIbJ#vtDZ_4y1OEZBBKTT4mnVvJ86jvbqdnkYalEuSdDssks)
 
 **Instalação:**
 
