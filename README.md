@@ -2,10 +2,11 @@
 
 Um jogo de Shooter 2D feito com pygame.
 
-<video width="320" height="240" autoplay>
-  <source src="./screenshot/video.mp4" type="video/mp4">
-Your browser does not support the video tag.
-</video>
+
+
+
+https://github.com/user-attachments/assets/2d71ebcd-1559-41b1-9964-c19af7bfacee
+
 
 
 **Instalação:**
